@@ -132,16 +132,16 @@ const SectionOne = () => {
                         >
                             <div className="flex-1 w-0 p-4">
                                 <div className="flex items-start">
-                                    <div className="flex-shrink-0 pt-0.5">
-                                        <img
+                                    <div className="relative flex-shrink-0 pt-0.5">
+                                        <Image
                                             className="h-10 w-10 rounded-full"
-                                            src={image}
+                                fill            src={image}
                                             alt={title}
                                         />
                                     </div>
                                     <div className="ml-3 flex-1">
                                         <p className="text-sm font-medium text-gray-900">
-                                           Purchased {title}
+                                            Purchased {title}
                                         </p>
                                         <p className="mt-1 text-sm text-gray-500">
                                             ${price}
@@ -178,7 +178,7 @@ const SectionOne = () => {
                         sizes: []
                     });
                     setChecking(false);
-                    setBuy(false)
+                    setBuy(false);
                 },
                 onCancel: () => {
                     // user closed popup
@@ -225,7 +225,10 @@ const SectionOne = () => {
                     >
                         {formData.map(
                             ({ id, label, type, placeholder, name }) => (
-                                <div className="flex flex-col items-start ">
+                                <div
+                                    key={id}
+                                    className="flex flex-col items-start "
+                                >
                                     <label
                                         className="text-primary capitalize
                                             font-medium"
@@ -256,6 +259,7 @@ const SectionOne = () => {
                         <h1 className="capitalize font-medium">Colors:</h1>
                         {buyProd?.colors?.map(c => (
                             <p
+                                key={c}
                                 onClick={() => handleInfo("colors", c)}
                                 style={{ backgroundColor: c }}
                                 className="w-5 h-5 rounded-md"
@@ -270,6 +274,7 @@ const SectionOne = () => {
                         <h1 className="capitalize font-medium">sizes:</h1>
                         {buyProd?.sizes?.map(s => (
                             <p
+                            key={s}
                                 onClick={() => handleInfo("sizes", s)}
                                 style={{
                                     color: info?.sizes?.includes(s)
