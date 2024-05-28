@@ -1,10 +1,5 @@
 import {
     SectionOne,
-    SectionTwo,
-    SectionThree,
-    SectionFour,
-    SectionFive,
-    SectionSix,
     Footer,
     Header
 } from "../components/";

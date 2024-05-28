@@ -1,12 +1,12 @@
 "use client";
+import axios from "axios";
 import { Carousel } from "react-responsive-carousel";
 import Image from "next/image";
 import { Check, X } from "lucide-react";
 import { useState } from "react";
 import { ProductCard } from "./";
 import { prod } from "../lib/data";
-import PaystackPop from "@paystack/inline-js";
-import axios from "axios";
+import { PaystackButton } from "react-paystack";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import toast from "react-hot-toast";
 const SectionOne = () => {
@@ -74,14 +74,22 @@ const SectionOne = () => {
             placeholder: "your country "
         }
     ];
-    const handleCheckout = () => {
-        setChecking(true);
-        const { email, address, city, state, postal, country, colors, sizes } =
-            info;
 
-        const { image, price, title } = buyProd;
+    const { email, address, city, state, postal, country, colors, sizes } =
+        info;
 
-        const newData = {
+    const { image, price, title } = buyProd;
+    const publicKey = process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY;
+    const canPay =
+        [email, address, city, state, postal, country, price, title].every(
+            Boolean
+        ) &&
+        sizes.length &&
+        colors.length;
+    const componentProps = {
+        email,
+        amount: price * 100,
+        metadata: {
             email,
             address,
             city,
@@ -89,109 +97,88 @@ const SectionOne = () => {
             postal,
             country,
             colors,
-            sizes,
-            price,
-            title
-        };
-        const canPay =
-            [email, address, city, state, postal, country, price, title].every(
-                Boolean
-            ) &&
-            sizes.length &&
-            colors.length;
-        try {
-            if (!canPay) {
-                toast.error("fill all fields");
-                setChecking(false);
-                return;
-            }
-            const paystack = new PaystackPop();
-            paystack.newTransaction({
-                key: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY,
-                email,
-                amount: price * 100, // the amount value is multiplied by 100 to convert to the lowest currency unit
-                currency: "NGN", // Use GHS for Ghana Cedis or USD for US Dollars
-
-                // ref: "YOUR_REFERENCE1",
-
-                onSuccess: transaction => {
-                    // Payment complete! Reference: transaction.reference
-
-                    const reference = transaction.reference;
-                    const res = axios.post("/api/mail", {
-                        ...newData,
-                        ref: reference
-                    });
-                    console.log("resemail", res);
-
-                    toast.custom(t => (
-                        <div
-                            className={`${
-                                t.visible ? "animate-enter" : "animate-leave"
-                            } max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5`}
-                        >
-                            <div className="flex-1 w-0 p-4">
-                                <div className="flex items-start">
-                                    <div className="relative flex-shrink-0 pt-0.5">
-                                        <Image
-                                            className="h-10 w-10 rounded-full"
-                                fill            src={image}
-                                            alt={title}
-                                        />
-                                    </div>
-                                    <div className="ml-3 flex-1">
-                                        <p className="text-sm font-medium text-gray-900">
-                                            Purchased {title}
-                                        </p>
-                                        <p className="mt-1 text-sm text-gray-500">
-                                            ${price}
-                                        </p>
+            sizes
+        },
+        publicKey,
+        text: "Checkout",
+        onSuccess: ({ reference }) => {
+            setChecking(true);
+            const res = axios
+                .post("api/mail", {
+                    email,
+                    address,
+                    city,
+                    state,
+                    postal,
+                    country,
+                    colors,
+                    sizes,
+                    price,
+                    title
+                })
+                .then(res => {
+                    if (res.status === 200) {
+                        toast.custom(t => (
+                            <div
+                                className={`${
+                                    t.visible
+                                        ? "animate-enter"
+                                        : "animate-leave"
+                                } max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5`}
+                            >
+                                <div className="flex-1 w-0 p-4">
+                                    <div className="flex items-start">
+                                        <div className=" relative pt-0.5 h-10 w-10 ">
+                                            <Image
+                                                className="object-contain rounded-full"
+                                                fill
+                                                src={image}
+                                                alt={title}
+                                            />
+                                        </div>
+                                        <div className="ml-3 flex-1">
+                                            <p className="text-sm font-medium text-gray-900">
+                                                {title}
+                                            </p>
+                                            <p className="mt-1 text-sm text-gray-500">
+                                                ${price}
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
+                                <div className="flex border-l border-gray-200">
+                                    <button
+                                        onClick={() => toast.dismiss(t.id)}
+                                        className="w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    >
+                                        Close
+                                    </button>
+                                </div>
                             </div>
-                            <div className="flex border-l border-gray-200">
-                                <button
-                                    onClick={() => toast.dismiss(t.id)}
-                                    className="w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                >
-                                    Close
-                                </button>
-                            </div>
-                        </div>
-                    ));
-                    setBuyProd({
-                        image: "",
-                        title: "",
-                        price: "",
-                        colors: [],
-                        sizes: []
-                    });
-
-                    setInfo({
-                        email: "",
-                        address: "",
-                        city: "",
-                        state: "",
-                        postal: "",
-                        country: "",
-                        colors: [],
-                        sizes: []
-                    });
-                    setChecking(false);
-                    setBuy(false);
-                },
-                onCancel: () => {
-                    // user closed popup
-                    alert("Transaction was not completed, window closed.");
-                }
-            });
-        } catch (error) {
-            console.log("error", error);
-            setChecking(false);
-            return;
-        } finally {
-            setChecking(false);
-        }
+                        ));
+                        setBuyProd({
+                            image: "",
+                            title: "",
+                            price: "",
+                            colors: [],
+                            sizes: []
+                        });
+                        setInfo({
+                            email: "",
+                            address: "",
+                            city: "",
+                            state: "",
+                            postal: "",
+                            country: "",
+                            colors: [],
+                            sizes: []
+                        });
+                        setChecking(false);
+                        setBuy(false);
+                    }
+                });
+        },
+        onClose: () => alert("Wait! You need this tshirt, don't go!!!!")
     };
     const handleInfo = (type, clicked) => {
         if (info[type].includes(clicked)) {
@@ -201,6 +188,13 @@ const SectionOne = () => {
             setInfo(prev => ({ ...prev, [type]: [...prev[type], clicked] }));
         }
     };
+    if (checking) {
+        return (
+            <div className="flex-1 flex justify-center items-center">
+                <p>loading...</p>
+            </div>
+        );
+    }
     return (
         <section
             className="items-start rounded-lg flex flex-1
@@ -274,7 +268,7 @@ const SectionOne = () => {
                         <h1 className="capitalize font-medium">sizes:</h1>
                         {buyProd?.sizes?.map(s => (
                             <p
-                            key={s}
+                                key={s}
                                 onClick={() => handleInfo("sizes", s)}
                                 style={{
                                     color: info?.sizes?.includes(s)
@@ -316,14 +310,24 @@ const SectionOne = () => {
                                         : 1)}
                             </h1>
                         </div>
-
-                        <h1
-                            onClick={checking ? null : handleCheckout}
-                            className={`capitalize bg-primary text-accent px-2
-                            p-2 rounded-lg ${checking ? "animate-pulse" : ""}`}
+                        <div
+                            className={`${
+                                canPay ? "bg-primary" : "bg-primary/50"
+                            } text-white rounded-lg w-fit
+                        px-2 py-2`}
                         >
-                            checkout
-                        </h1>
+                            {canPay ? (
+                                <PaystackButton {...componentProps} />
+                            ) : (
+                                <h1
+                                    onClick={() =>
+                                        toast.error("All field must be filled")
+                                    }
+                                >
+                                    Checkout
+                                </h1>
+                            )}
+                        </div>
                     </div>
                 </div>
             ) : (

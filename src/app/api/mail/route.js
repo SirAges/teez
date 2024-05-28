@@ -39,12 +39,13 @@ export const POST = async request => {
     <div style="background-color: #940000; padding: 20px; text-align: center;">
         <h1 style="color: #ffffff; margin: 0;">Thank You for Your Purchase!</h1>
     </div>
-    <div style="background-color: #171717; padding: 20px; color: #ffffff; ">
+    <div style="background-color: #171717; padding: 20px; ">
         <p>Hello,</p>
         <p>Thank you for your purchase of <strong style="text-transform:
-        capitalize;color:"#940000" font-size: 1.2em;">${title}</strong>.</p>
+        capitalize;color:"#ffffff" font-size: 1.2em;">${title}</strong>.</p>
         <p>Details:</p>
-        <p><strong>Price:</strong> $${price}</p>
+        <p style="text-transform:
+        capitalize;color:"#ffffff" font-size: 1.2em;"><strong>Price:</strong> $${price}</p>
         <p><strong>Color(s):</strong><br />${formattedColors}</p>
         <p><strong>Size(s):</strong><br />${formattedSizes}</p>
         <p><strong>Shipping Address:</strong> ${address}, ${city}, ${state}, ${postal}, ${country}</p>
