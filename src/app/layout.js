@@ -3,9 +3,9 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-    title: "Affiliate Marketing",
+    title: "Teez Fashion",
     description:
-        "Join our affiliate community and unlock earning potential! Promote services and products and earn commissions for successful referrals. Join us  now!",
+        "Your number one tshirt vendor.",
     icons: {
         icon: "/assets/images/aflogo.png"
     }
