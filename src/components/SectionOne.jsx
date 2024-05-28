@@ -90,14 +90,47 @@ const SectionOne = () => {
         email,
         amount: price * 100,
         metadata: {
-            email,
-            address,
-            city,
-            state,
-            postal,
-            country,
-            colors,
-            sizes
+          custom_fields: [
+                {
+                    display_name: email,
+                    variable_name: email,
+                    value: email
+                },
+                {
+                    display_name: address,
+                    variable_name: address,
+                    value: address
+                },  {
+                    display_name: city,
+                    variable_name: city,
+                    value: state
+                },  {
+                    display_name: state,
+                    variable_name: state,
+                    value: state
+                },  {
+                    display_name: postal,
+                    variable_name: postal,
+                    value: postal
+                },
+                  {
+                    display_name: country,
+                    variable_name: country,
+                    value: country
+                },  {
+                    display_name: "colors",
+                    variable_name: colors,
+                    value: colors.join()
+                },  {
+                    display_name: "sizes",
+                    variable_name: "sizes",
+                    value: sizes.join()
+                },
+              
+            ]
+  
+      
+         
         },
         publicKey,
         text: "Checkout",
