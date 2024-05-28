@@ -31,7 +31,7 @@ const ProductCard = ({
     };
     const handleBuy = () => {
         setBuyProd({
-          image,
+            image,
             title,
             price,
             colors,
@@ -46,7 +46,8 @@ const ProductCard = ({
             animate={controls}
             initial="hidden"
             variants={variants}
-            className="flex w-full  bg-white shadow shadow-lg items-start rounded-lg space-y-2
+            className="flex w-full  bg-white shadow shadow-lg items-start
+            rounded-lg space-y-2
             py-2 px-2  flex-col h-96"
         >
             <div className="md:w-1/2 flex-1  h-96 min-w-full w-full rounded-lg relative ">

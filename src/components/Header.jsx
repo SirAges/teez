@@ -2,7 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Menu, MessageCircle } from "lucide-react";
-import { Toaster } from 'react-hot-toast';
+import { Toaster } from "react-hot-toast";
 
 const Header = () => {
     return (

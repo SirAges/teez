@@ -197,16 +197,15 @@ const SectionOne = () => {
     }
     return (
         <section
-            className="items-start rounded-lg flex flex-1
+            className="items-start rounded-lg justify-center flex md:w-1/2
              max-w-full "
             id="#1"
         >
             {buy ? (
                 <div
-                    className="flex w-full  bg-white shadow shadow-lg
+                    className="flex w-full bg-white shadow shadow-lg
                     items-start rounded-lg space-y-2 py-2 px-2 flex-col max-h-96
-                    bg-red-600 h-96
-                    relative
+                      h-96 relative
                     "
                 >
                     <X
@@ -332,7 +331,7 @@ const SectionOne = () => {
                 </div>
             ) : (
                 <Carousel
-                    className="w-full flex-1"
+                    className="w-full"
                     autoPlay={true}
                     interval={3000} // Delay between slides in milliseconds
                     infiniteLoop={true} // Loop the carousel
