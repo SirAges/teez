@@ -209,7 +209,8 @@ const SectionOne = () => {
                         setChecking(false);
                         setBuy(false);
                     }
-                });
+                }).catch(()=>{setChecking(false);
+                        setBuy(false);});
         },
         onClose: () => alert("Wait! You need this tshirt, don't go!!!!")
     };
